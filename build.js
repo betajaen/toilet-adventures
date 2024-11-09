@@ -191,7 +191,7 @@ const PAGE_FILTERS = {
         return value || undefined;
     },
     link: function(value, meta) {
-        return `[${meta.article}](/${meta.id}.HTML)`;
+        return `[${meta.article}](/${meta.id}.HTM)`;
     },
     author: function(value, meta) {
         return kase.ident(value || 'Unknown');
@@ -200,7 +200,7 @@ const PAGE_FILTERS = {
         return AUTHORS[meta.author] || 'Unknown';
     },
     author_link: function(value, meta) {
-        return `[${meta.author_article}](/AUTHORS.HTML#${meta.author})`;
+        return `[${meta.author_article}](/AUTHORS.HTM#${meta.author})`;
     },
     systems: function(value, meta) {
         if (value == undefined) {
@@ -211,7 +211,7 @@ const PAGE_FILTERS = {
     systems_links: function(value, meta) {
         let p = [];
         for(const pname of (meta.systems || [])) {
-            p.push(`[${SYSTEMS[pname] || 'Unknown'}](/SYSTEMS.HTML#${pname})`);
+            p.push(`[${SYSTEMS[pname] || 'Unknown'}](/SYSTEMS.HTM#${pname})`);
         }
         return p;
     },
@@ -228,7 +228,7 @@ const PAGE_FILTERS = {
         }
     },
     dst_path : function(value, meta) {
-        return `./build/${meta.id}.HTML`;
+        return `./build/${meta.id}.HTM`;
     },
     sort_names: function(value, meta) {
         if (value != undefined) {
@@ -520,7 +520,7 @@ function writeHtml(page) {
         singleAttributePerLine: false});
     
     html = html.replaceAll(/~(\w+):(\w+)\b/g, function(match, p1, p2) {
-        return `<A NAME="/${p1}.HTML#${p2}"></A>`;
+        return `<A NAME="/${p1}.HTM#${p2}"></A>`;
     });
     
     // <a href=" to <A HREF="
@@ -598,14 +598,15 @@ function writePagesHtml(pages) {
 }
 
 function writeRedirects(pages) {
-    let text = '/ /INDEX.HTML 302\n';
+    let text = '/ /INDEX.HTM 302\n';
+    /*
     for(const page_name of Object.keys(PAGES)) {
         const page = PAGES[page_name];
         if (page.todo)
             continue;
-        text += `/${page.id.toLowerCase()}.html /${page.id.toUpperCase()}.HTML 301\n`;
-    }
-    text += '/* /SITEMAP.HTML 404\n';
+        text += `/${page.id.toLowerCase()}.html /${page.id.toUpperCase()}.HTM 301\n`;
+    }*/
+    text += '/* /SITEMAP.HTM 404\n';
     fs.writeFileSync('./build/_redirects', text);
 }
 
