@@ -304,9 +304,6 @@ const PAGE_FILTERS = {
 
 function load_page(src_path) {
     const id = path.basename(src_path, path.extname(src_path)).toUpperCase();
-    if (id.length > 8) {
-        throw `${src_path} is too long (${id.length}) to use as an id`;
-    }
 
     const page_data = fs.readFileSync(src_path, 'utf-8');
     const sections = page_data.split('---', 2);
@@ -327,6 +324,10 @@ function load_page(src_path) {
 
     for(const key of Object.keys(meta)) {
         page[key] = meta[key];
+    }
+
+    if (page.game && id.length > 6) {
+        throw `${src_path} is too long (${id.length}) to use as an id for a game!`;
     }
 
     if (page.hide) {
@@ -608,6 +609,10 @@ function writeRedirects(pages) {
     }*/
     text += '/* /SITEMAP.HTM 404\n';
     fs.writeFileSync('./build/_redirects', text);
+}
+
+for(const fn of fs.readdirSync('./build')) {
+    fs.rmSync(path.join('build', fn));
 }
 
 readPageDir('./data/pages/', PAGES);

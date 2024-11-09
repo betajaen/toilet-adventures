@@ -4,6 +4,10 @@ author = "sierra"
 systems = ["amiga", "dos", "atari"]
 date = [1989, 1990]
 game = true
+dependencies = [
+    "screenshot, ab-img, bequest-a, bequest-b.png",
+    "easter, img, bequest-c.png"
+]
 
 ---
 
