@@ -2,5 +2,5 @@
 
 :Author: {{author_link}}
 :Score: {{score}}
-:Platforms: {{list platforms_links '.'}}
+:Systems: {{list systems_links '.'}}
 :Date: {{years date}}

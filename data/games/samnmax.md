@@ -1,7 +1,7 @@
 name = "Sam & Max: Hit the Road"
 score = 0.5
 author = "lucasarts"
-platforms = ["amiga", "dos", "macintosh"]
+systems = ["amiga", "dos", "macintosh"]
 date = [1991, 1992]
 game = true
 todo = true

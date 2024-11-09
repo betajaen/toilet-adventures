@@ -1,7 +1,7 @@
 name = "The Colonel's Bequest"
 score = 4
 author = "sierra"
-platforms = ["amiga", "dos", "atari"]
+systems = ["amiga", "dos", "atari"]
 date = [1989, 1990]
 game = true
 

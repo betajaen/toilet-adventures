@@ -1,7 +1,7 @@
 name = "Police Quest 2: The Vengeance"
 score = 2
 author = "sierra"
-platforms = ["amiga", "dos", "atari"]
+systems = ["amiga", "dos", "atari"]
 date = [1988, 1989]
 game = true
 todo = true

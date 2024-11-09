@@ -1,7 +1,7 @@
 name = "Codename: ICEMAN"
 score = 3
 author = "sierra"
-platforms = ["amiga", "dos", "atari"]
+systems = ["amiga", "dos", "atari"]
 date = [1989, 1990]
 game = true
 

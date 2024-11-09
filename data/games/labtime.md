@@ -1,7 +1,7 @@
 name = "The Labyrinth of Time"
 score = 2
 author = "terranova"
-platforms = ["amiga", "dos", "macintosh"]
+systems = ["amiga", "dos", "macintosh"]
 date = [1993, 1994]
 game = true
 todo = true

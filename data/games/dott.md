@@ -1,7 +1,7 @@
 name = "Maniac Mansion: Day of the Tentacle"
 score = 2
 author = "lucasarts"
-platforms = ["amiga", "dos", "macintosh"]
+systems = ["amiga", "dos", "macintosh"]
 date = [1991, 1992]
 game = true
 todo = true

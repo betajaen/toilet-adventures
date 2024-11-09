@@ -11,7 +11,7 @@ You can view this data in the following formats:
 * @scores
 * @authors
 * @years
-* @platforms
+* @systems
 
 Other useful pages are:
 

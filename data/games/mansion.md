@@ -1,7 +1,7 @@
 name = "Maniac Mansion"
 score = 2
 author = "lucasarts"
-platforms = ["amiga", "dos", "c64", "apple2", "atari", "nes"]
+systems = ["amiga", "dos", "c64", "apple2", "atari", "nes"]
 date = [1987, 1989]
 game = true
 todo = true

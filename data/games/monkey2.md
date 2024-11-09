@@ -1,7 +1,7 @@
 name = "Monkey Island 2: LeChuck's Revenge"
 score = 1
 author = "lucasarts"
-platforms = ["amiga", "dos", "macintosh"]
+systems = ["amiga", "dos", "macintosh"]
 date = [1991, 1992]
 game = true
 todo = true

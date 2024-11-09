@@ -1,7 +1,7 @@
 name = "Police Quest: In Pursuit of the Death Angel"
 score = 1
 author = "sierra"
-platforms = ["amiga", "dos", "macintosh", "atari", "apple2"]
+systems = ["amiga", "dos", "macintosh", "atari", "apple2"]
 date = [1987, 1987]
 game = true
 todo = true

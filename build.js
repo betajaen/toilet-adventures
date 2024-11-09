@@ -11,7 +11,12 @@ const { execSync } = require('child_process');
 const NAMES_ORDER = '#abcdefghijklmnopqrstuvwxyz';
 
 const PAGES = {};
-const VARS = toml.parse(fs.readFileSync('./data/vars.toml', 'utf-8'));
+const NOW = new Date(Date.now());
+
+const VARS = { 
+    ...toml.parse(fs.readFileSync('./data/vars.toml', 'utf-8')),
+    gendate: NOW.toUTCString(), // NOW.getDate() + '/' + NOW.toLocaleString('default', { month: 'long' }) + '/' + NOW.getFullYear()
+};
 
 
 kase.ident = function(str) { return kase.kebab(kase.lower(str)); }
@@ -134,6 +139,8 @@ function parseBoolOrTrue(value, meta) {
 
 const MUSTACHE_FNS = {
     list: (arr, suffix = '') => {
+        if (arr == null || arr.length == 0)
+            return '';
     const useOxfordComma = true;
     const listStart = arr.slice(0, -1).join(', ')
     const listEnd = arr.slice(-1)
@@ -147,6 +154,16 @@ const MUSTACHE_FNS = {
     },
     years: (x) => {
         return x.join('-');
+    },
+    meta: (x) => {
+        let html = '';
+        if (x != undefined) {
+            for(const name of Object.keys(x)) {
+                const value = x[name];
+                html += `\n\t<META NAME="${name}" CONTENT="${value}">`
+            }
+        }
+        return html;
     }
 }
 
@@ -158,7 +175,11 @@ const PARTIALS = {
 
 const PAGE_FILTERS = {
     article: function(value, meta) {
-        return kase.article(meta.name || 'unknown');
+        let article = kase.article(meta.name || 'unknown');
+        if (meta.todo != undefined && meta.todo) {
+            article += ' (TODO)';
+        }
+        return article;
     },
     game: function(value, meta) {
         if (value == undefined) {
@@ -269,6 +290,15 @@ const PAGE_FILTERS = {
             return value;
         }
         return false;
+    },
+    headers: function(value, meta) {
+        let headers = {};
+        if (meta.id == 'INDEX') {
+            headers['robots'] = 'index, follow';
+        }
+        headers['Content-Language'] = 'en-GB';
+        headers['author'] = 'Writers at toilet-adventures.com';
+        return headers;
     }
  };
 
@@ -526,7 +556,7 @@ function writeHtml(page) {
 
     page.html = html;
 
-    let chrome = PARTIALS.chrome({...page, ...VARS});
+    let chrome = PARTIALS.chrome({...page, ...VARS, ...MUSTACHE_FNS});
 
     for(const r of HTML_REPLACEMENTS) {
         chrome = chrome.replaceAll(r[0], r[1]);
@@ -551,7 +581,7 @@ function readPageDir(dir_path, pages) {
             continue;
         const src_path = path.join(dir_path, fn);
         const page = load_page(src_path);
-        if (page == null) {
+        if (page == null) { // || page.todo == true) {
             continue;
         }
         page.src_path = src_path;
