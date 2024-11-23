@@ -18,6 +18,27 @@ const VARS = {
     gendate: NOW.toUTCString(), // NOW.getDate() + '/' + NOW.toLocaleString('default', { month: 'long' }) + '/' + NOW.getFullYear()
 };
 
+const PARTIALS = {
+    'chrome' : handlebars.compile(fs.readFileSync('./data/partials/chrome.html', 'utf-8')),
+    'gameinfo' : fs.readFileSync('./data/partials/gameinfo.md', 'utf-8'),
+    'finalscore' : fs.readFileSync('./data/partials/finalscore.md', 'utf-8')
+}
+
+const CRITERIA = toml.parse(fs.readFileSync('./data/criteria.toml', 'utf-8'))['criteria'];
+PARTIALS['criteria_md'] = '';
+
+for(const criteria_name of Object.keys(CRITERIA)) {
+    const crit = CRITERIA[criteria_name];
+    let reason = crit.reason.trim();
+    if (reason.endsWith('.')) {
+        reason = reason.substring(0, reason.length - 1);
+        reason += ', ';
+    }
+    reason += `${crit.score} pt.`; 
+    PARTIALS['criteria_md'] += '* ' + reason + '\n';
+}
+
+console.log(VARS);
 
 kase.ident = function(str) { return kase.kebab(kase.lower(str)); }
 kase.article = function(str) {
@@ -167,12 +188,6 @@ const MUSTACHE_FNS = {
     }
 }
 
-const PARTIALS = {
-    'chrome' : handlebars.compile(fs.readFileSync('./data/partials/chrome.html', 'utf-8')),
-    'gameinfo' : fs.readFileSync('./data/partials/gameinfo.md', 'utf-8'),
-    'finalscore' : fs.readFileSync('./data/partials/finalscore.md', 'utf-8')
-}
-
 const PAGE_FILTERS = {
     article: function(value, meta) {
         let article = kase.article(meta.name || 'unknown');
@@ -188,7 +203,7 @@ const PAGE_FILTERS = {
         return value;
     },
     score: function(value, meta) {
-        return value || undefined;
+        return value || 0;
     },
     link: function(value, meta) {
         return `[${meta.article}](/${meta.id}.HTM)`;
@@ -298,21 +313,90 @@ const PAGE_FILTERS = {
         }
         headers['Content-Language'] = 'en-GB';
         headers['author'] = 'Writers at toilet-adventures.com';
+        headers['date'] = VARS['gendate'];
         return headers;
+    },
+    resources: function(value, meta) {
+        if (value == undefined) {
+            return {};
+        }
+        
+        let resources = {};
+        let res_num = 1;
+
+        for(const str of value) {
+            let parts = str.split(',');
+            for(let i=0;i < parts.length;i++) {
+                parts[i] = parts[i].trim();
+            }
+            const res_name = parts[0];
+            const res_type = parts[1];
+            const res_id = `${meta.id}~${res_num}`; 
+            parts = parts.slice(2);
+
+            if (res_type == 'img' || res_type == 'img!trim') {
+                let res_fn = res_id + '.GIF';
+                let input_img = path.join('data', 'games', parts[0]);
+                let dest_img = path.join('build', res_fn);
+
+                if (res_type == 'img!trim') {
+                    execSync(`magick convert "${input_img}" -trim +repage "temp.png"`);
+                    execSync(`magick convert "temp.png" -dither None -colors 256 "${dest_img}"`);
+                }
+                else {
+                    execSync(`magick convert ${input_img} -dither None -colors 256 "${dest_img}"`);
+                }
+
+                resources[res_name] = res_fn;
+            }
+            else if (res_type == 'ab' || res_type == 'ab!trim') {
+                let res_fn = res_id + '.GIF';
+                let a_img = path.join('data', 'games', parts[0]);
+                let b_img = path.join('data', 'games', parts[1]);
+                let dest_img = path.join('build', res_fn);
+                execSync(`magick "${a_img}" "${b_img}" -compose difference -composite -threshold 0 "mask.png"`);
+                execSync(`magick "${a_img}" "${b_img}" "mask.png" -compose Over -composite "temp.png"`);
+
+                if (res_type == 'ab!trim') {
+                    execSync(`magick "temp.png" -trim +repage "temp.png"`);
+                }
+
+                execSync(`magick convert temp.png -dither None -colors 256 ${dest_img}`);
+                resources[res_name] = res_fn;
+            }
+            else {
+                throw `Unknown resource type '${str}' in ${meta.id}`;
+            }
+
+            res_num++;
+        }
+
+        return resources;
     }
  };
 
-function load_page(src_path) {
+function loadPage(src_path) {
     const id = path.basename(src_path, path.extname(src_path)).toUpperCase();
 
     const page_data = fs.readFileSync(src_path, 'utf-8');
     const sections = page_data.split('---', 2);
     const meta = toml.parse(sections[0].trim());
-    const md = sections[1].trim();
+    let md = sections[1].trim();
    
     meta.id =  id;
     meta.key = id.toLowerCase();
     meta.src_path = src_path;
+    meta.score = meta.score || 0;
+    meta.points = []
+
+    for(const criteria_name of Object.keys(CRITERIA)) {
+        const criteria = CRITERIA[criteria_name];
+        md = md.replaceAll(`&${criteria_name};`, function(p0) {
+            meta.score += criteria.score;
+            meta.points.push(criteria_name);
+            return '';
+        });
+    }
 
     let page = {
         md: md
@@ -500,6 +584,14 @@ function writeHtml(page) {
         return tgt.link;
     });
 
+    md = md.replaceAll(/!(\w+):(\w+)\b/g, function(match, p1, p2) {
+        const res = page.resources[p1];
+        if (res == null || res == undefined) {
+            throw `Could not find resource ${p1} in page ${page.id}`;
+        }
+        return `[${p2}](/${res})`;
+    });
+
     md = md.replaceAll(/!!!(\w+)!!!/g, function(match, p) {
         const partial = PARTIALS[p];
         if (partial == null) {
@@ -581,8 +673,8 @@ function readPageDir(dir_path, pages) {
         if (fn.endsWith('.md') == false)
             continue;
         const src_path = path.join(dir_path, fn);
-        const page = load_page(src_path);
-        if (page == null) { // || page.todo == true) {
+        const page = loadPage(src_path);
+        if (page == null || page.todo == true) {
             continue;
         }
         page.src_path = src_path;

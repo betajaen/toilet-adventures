@@ -1,5 +1,4 @@
 name = "Codename: ICEMAN"
-score = 3
 author = "sierra"
 systems = ["amiga", "dos", "atari"]
 date = [1989, 1990]
@@ -17,9 +16,9 @@ The head can be found in the XO's quarters aboard the U.S.S. Blackhawk, located 
 
 ## Points
 
-* A well plumbed and stainless steel toilet, ahead of design, 1 pt.
-* Scuttle butt says that there is a space to wash your hands, 1 pt.
-* Excess flushing can cause the water tanks to recycle. Not very stealthly is it?, 1 pt.
+* &presence; A well plumbed and stainless steel toilet, ahead of design.
+* &presence; Scuttle butt says that there is a space to wash your hands.
+* &bug; Excess flushing can cause the water tanks to recycle. Not very stealthly is it?
 
 !!!finalscore!!!
 

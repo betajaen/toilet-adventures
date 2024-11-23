@@ -1,5 +1,4 @@
 name = "Dark Seed"
-score = 2
 author = "cyberdreams"
 systems = ["amiga", "dos", "macintosh", "win3x", "saturn", "ps1" ]
 date = [1992, 1995]
@@ -17,8 +16,8 @@ The bathroom can be found in Mike Dawson's house on the second floor, between th
 
 ## Points
 
-* A old large bathroom, with mold and falling wallpaper, 1 pt.
-* Working plumbing for the sink and shower, 1 pt.
+* &presence; A old large bathroom, with mold and falling wallpaper.
+* &full; Working plumbing for the sink and shower.
 
 !!!finalscore!!!
 

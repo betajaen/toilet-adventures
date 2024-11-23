@@ -1,16 +1,14 @@
 name = "Cruise for a Corpse"
-score = 3
 author = "delphine"
 systems = ["amiga", "dos", "macintosh"]
 date = [1991, 1991]
 game = true
-todo = true
 
 ---
 
 # {{name}}
 
-TO WRITE.
+In the middle of the night, Inspector Raoul Dusentier receives an invitation to the grand sailing ship of the wealthy businessman Niklos Karaboudjan. Looking forward to a nice, relaxing cruise, he is soon presented with a murdered body of Niklos Karaboudjan, and everyone is a suspect.
 
 ## Locations
 
@@ -19,9 +17,9 @@ TO WRITE.
 
 ## Points
 
-* Two small heads on the main deck for guests of the Karaboudjan family, 1pt.
-* A washbasin with soap that anyone could slip on, 1pt.
-* A good, sturdy porcelain toilet and seat that anyone can sit upon, 1pt.
+* &full; Two small washrooms on the main deck for guests of the Yacht Karaboudjan.
+* &presence; A wash basin with soap that anyone could slip on.
+* &presence; A good, sturdy porcelain toilet and seat that anyone can sit upon.
 
 !!!finalscore!!!
 

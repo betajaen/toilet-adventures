@@ -1,0 +1,16 @@
+[criteria]
+[criteria.implied]
+score = 0.5
+reason = "Toilet/Sink/Bathtub/Shower does not have a presence, or may not be directly interacted with by the protagonist but usage is implied."
+[criteria.presence]
+score = 1
+reason = "Toilet/Sink/Bathtub/Shower has a presence which may interacted with through dialgoue, animation or a cutscene."
+[criteria.bug]
+score = 1
+reason = "Use of the bathroom, or bathroom furniture directly results in a bug but does not crash the game."
+[criteria.crash]
+score = 2
+reason = "Use of the bathroom, or bathroom furniture directly crashes the game."
+[criteria.full]
+score = 1
+reason = "A bathroom that can be used frequently through out the majority of the game."
